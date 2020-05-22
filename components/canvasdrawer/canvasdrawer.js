@@ -125,9 +125,32 @@ Component({
         }
       })
     },
+    roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath()
+        ctx.setFillStyle('transparent')
+        ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5)
+        ctx.moveTo(x + r, y)
+        ctx.lineTo(x + w - r, y)
+        ctx.lineTo(x + w, y + r)
+        ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2)
+        ctx.lineTo(x + w, y + h - r)
+        ctx.lineTo(x + w - r, y + h)
+        ctx.arc(x + w - r, y + h - r, r, 0, Math.PI * 0.5)
+        ctx.lineTo(x + r, y + h)
+        ctx.lineTo(x, y + h - r)
+        ctx.arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI)
+        ctx.lineTo(x, y + r)
+        ctx.lineTo(x + r, y)
+        ctx.fill()
+        ctx.closePath()
+        ctx.clip()
+      },
     drawImage (params) {
       this.ctx.save()
       const { url, top = 0, left = 0, width = 0, height = 0, borderRadius = 0, deg = 0 } = params
+      if(borderRadius){
+        this.roundRect(this.ctx,left,top,width,height,borderRadius)
+      }
       // if (borderRadius) {
       //   this.ctx.beginPath()
       //   this.ctx.arc(left + borderRadius, top + borderRadius, borderRadius, 0, 2 * Math.PI)
@@ -142,6 +165,7 @@ Component({
         this.ctx.drawImage(url, left, top, width, height)
       }
       // }
+      
       this.ctx.restore()
     },
     drawText (params) {
