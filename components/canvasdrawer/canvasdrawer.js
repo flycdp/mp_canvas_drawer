@@ -125,9 +125,50 @@ Component({
         }
       })
     },
+    roundRect(ctx, x, y, w, h, r) {
+        // 开始绘制
+        ctx.beginPath()
+        // 因为边缘描边存在锯齿，最好指定使用 transparent 填充
+        // 这里是使用 fill 还是 stroke都可以，二选一即可
+        ctx.setFillStyle('transparent')
+        // ctx.setStrokeStyle('transparent')
+        // 左上角
+        ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5)
+
+        // border-top
+        ctx.moveTo(x + r, y)
+        ctx.lineTo(x + w - r, y)
+        ctx.lineTo(x + w, y + r)
+        // 右上角
+        ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2)
+
+        // border-right
+        ctx.lineTo(x + w, y + h - r)
+        ctx.lineTo(x + w - r, y + h)
+        // 右下角
+        ctx.arc(x + w - r, y + h - r, r, 0, Math.PI * 0.5)
+
+        // border-bottom
+        ctx.lineTo(x + r, y + h)
+        ctx.lineTo(x, y + h - r)
+        // 左下角
+        ctx.arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI)
+
+        // border-left
+        ctx.lineTo(x, y + r)
+        ctx.lineTo(x + r, y)
+
+        // 这里是使用 fill 还是 stroke都可以，二选一即可，但是需要与上面对应
+        ctx.fill()
+        // ctx.stroke()
+        ctx.closePath()
+        // 剪切
+        ctx.clip()
+      },
     drawImage (params) {
       this.ctx.save()
       const { url, top = 0, left = 0, width = 0, height = 0, borderRadius = 0, deg = 0 } = params
+      
       // if (borderRadius) {
       //   this.ctx.beginPath()
       //   this.ctx.arc(left + borderRadius, top + borderRadius, borderRadius, 0, 2 * Math.PI)
@@ -142,6 +183,9 @@ Component({
         this.ctx.drawImage(url, left, top, width, height)
       }
       // }
+      if(borderRadius){
+        this.roundRect(this.ctx,top,left,width,height,borderRadius)
+      }
       this.ctx.restore()
     },
     drawText (params) {
